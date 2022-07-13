@@ -32,9 +32,15 @@ public class Configuration
     public float MonthlyDues { get; set; }
 }
 
+public enum FlowType
+{
+    Debit,
+    Credit
+}
 public class Account
 {
     public int AccountId { get; set; }
+    public FlowType Flow {get; set;}
     public string Name { get; set; }
     public string Nome { get; set; }
 
