@@ -21,6 +21,47 @@ public class ScaleContext : DbContext
     // special "local" folder for your platform.
     protected override void OnConfiguring(DbContextOptionsBuilder options)
         => options.UseSqlite($"Data Source={DbPath}");
+
+    public void SetupDb()
+    {
+        if (!Configurations.Any())
+        {
+            // Create
+            Console.WriteLine("Initializing configurations");
+            Add(new Configuration
+            {
+                ValidFrom = new DateOnly(2019, 7, 1),
+                StairsCleaningFee = 20F,
+                CleaningsPerMonth = 2,
+                MonthlyDues = 12F
+            });
+            SaveChanges();
+        }
+
+        if (!Accounts.Any())
+        {
+            // Create
+            Console.WriteLine("Initializing accounts");
+            Add(new Account { Flow = FlowType.Debit, Name = "Stairs Payment", Nome = "Pagamento scale" });
+            Add(new Account { Flow = FlowType.Debit, Name = "Loan", Nome = "Prestito" });
+            Add(new Account { Flow = FlowType.Credit, Name = "Repayment", Nome = "Restituzione" });
+            Add(new Account { Flow = FlowType.Credit, Name = "Dues Payment", Nome = "Pagamento quote" });
+            Add(new Account { Flow = FlowType.Debit, Name = "Expenditure", Nome = "Altre spese" });
+            Add(new Account { Flow = FlowType.Credit, Name = "Revenue", Nome = "Altre entrate" });
+            SaveChanges();
+        }
+
+        if (!Apartments.Any())
+        {
+            // Create
+            Console.WriteLine("Initializing apartments");
+            Add(new Apartment { Floor = 1, Tenant = "Barbara" });
+            Add(new Apartment { Floor = 2, Tenant = "Elena" });
+            Add(new Apartment { Floor = 2, Tenant = "Gerardo" });
+            Add(new Apartment { Floor = 2, Tenant = "Michela" });
+            SaveChanges();
+        }
+    }
 }
 
 public class Configuration
@@ -40,7 +81,7 @@ public enum FlowType
 public class Account
 {
     public int AccountId { get; set; }
-    public FlowType Flow {get; set;}
+    public FlowType Flow { get; set; }
     public string Name { get; set; }
     public string Nome { get; set; }
 
@@ -68,6 +109,6 @@ public class JournalEntry
     public Account Account { get; set; }
     public int ApartmentId { get; set; }
     public Apartment Apartment { get; set; }
-    public string Description { get; set; }
+    public string? Description { get; set; }
 }
 
