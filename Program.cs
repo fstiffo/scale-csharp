@@ -7,3 +7,4 @@ using var db = new ScaleContext();
 Console.WriteLine($"Database path: {db.DbPath}.");
 
 db.SetupDb();
+Console.WriteLine($"Total balance: {db.TotalBalance()}");

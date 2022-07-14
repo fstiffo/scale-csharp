@@ -105,6 +105,31 @@ public class ScaleContext : DbContext
             SaveChanges();
         }
     }
+    // Calculate how many months are beetween two DateOnly objects.
+    private int MonthsBetween(DateOnly from, DateOnly to)
+    {
+        var months = 0;
+        var current = from;
+        while (current <= to)
+        {
+            current = current.AddMonths(1);
+            months++;
+        }
+        return months;
+    }
+    // Calculate the total balance for all accounts, debit is negative and credit positive
+    public float TotalBalance()
+    {
+        var balance = 0F;
+
+        var entries = JournalEntries.ToList(); // Select all journal entries
+        var totalDebit = entries.Sum(e => e.Debit); // Sum all debit entries
+        var totalCredit = entries.Sum(e => e.Credit); // Sum all credit entries
+        balance = totalCredit - totalDebit; // Subtract debit from credit
+
+        return balance;
+    }
+
 }
 
 public class Configuration
