@@ -22,6 +22,41 @@ public class ScaleContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder options)
         => options.UseSqlite($"Data Source={DbPath}");
 
+    // Read a text file and return its contents as a string.
+    private static string ReadFile(string path)
+    {
+        using var reader = new System.IO.StreamReader(path);
+        return reader.ReadToEnd();
+    }
+
+    private void SetupJournalEntries()
+    {
+        var entries = new List<JournalEntry>();
+        var lines = ReadFile(System.IO.Path.Join(System.AppContext.BaseDirectory, "journal.csv")).Split('\n');
+        foreach (var line in lines)
+        {
+            Console.WriteLine(line);
+            var parts = line.Split(',');
+            var date = parts[0].Split('-');
+            var accountId = int.Parse(parts[3]);
+            var account = Accounts.Find(accountId);
+            var debit = float.Parse(parts[1]);
+            var credit = float.Parse(parts[2]);
+            var apartmentId = accountId == 4 ? int.Parse(parts[4]) : (int?)null;
+
+            var entry = new JournalEntry
+            {
+                AccountId = accountId,
+                ApartmentId = apartmentId,
+                Date = new DateOnly(int.Parse(date[0]), int.Parse(date[1]), int.Parse(date[2])),
+                Debit = debit,
+                Credit = credit,
+            };
+            entries.Add(entry);
+        }
+        JournalEntries.AddRange(entries);
+    }
+
     public void SetupDb()
     {
         if (!Configurations.Any())
@@ -59,6 +94,14 @@ public class ScaleContext : DbContext
             Add(new Apartment { Floor = 2, Tenant = "Elena" });
             Add(new Apartment { Floor = 2, Tenant = "Gerardo" });
             Add(new Apartment { Floor = 2, Tenant = "Michela" });
+            SaveChanges();
+        }
+
+        if (!JournalEntries.Any())
+        {
+            // Create
+            Console.WriteLine("Initializing journal entries");
+            SetupJournalEntries();
             SaveChanges();
         }
     }
@@ -107,8 +150,8 @@ public class JournalEntry
     public float Credit { get; set; }
     public int AccountId { get; set; }
     public Account Account { get; set; }
-    public int ApartmentId { get; set; }
-    public Apartment Apartment { get; set; }
+    public int? ApartmentId { get; set; }
+    public Apartment? Apartment { get; set; }
     public string? Description { get; set; }
 }
 
