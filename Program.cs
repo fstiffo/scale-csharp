@@ -47,13 +47,19 @@ static bool Quit()
 
 using var db = new ScaleContext();
 
+var riassuntoFrame = new FrameView(
+    new Rect(1, 0, 43, 20),
+     $"Riassunto al {DateTime.Now.ToShortDateString()}");
+var movimentiFrame = new FrameView(new Rect(44, 0, 64, 20), "Movimenti");
+var operazioniLabel = new Label(44, 20, "        [A] Aggiungi    [E] Elimina    [RETURN] Modifica        ");
+operazioniLabel.ColorScheme = Colors.Error;
 // Add some controls, 
 win.Add(
-    // The ones laid out like an australopithecus, with Absolute positions:
-    new Label(3, 10, $"Database path: {db.DbPath}."),
-    new Label(3, 15, $"Total balance: {db.TotalBalance()}"),
-    new Label(3, 18, "Press F9 or ESC plus 9 to activate the menubar")
-);
+// The ones laid out like an australopithecus, with Absolute positions:
+    riassuntoFrame,
+    movimentiFrame,
+    operazioniLabel
+    );
 
 Application.Run();
 Application.Shutdown();
