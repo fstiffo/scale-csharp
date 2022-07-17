@@ -47,18 +47,18 @@ static bool Quit()
 
 using var db = new ScaleContext();
 
-var riassuntoFrame = new FrameView(
+var rissuntoFrm = new FrameView(
     new Rect(1, 0, 43, 20),
      $"Riassunto al {DateTime.Now.ToShortDateString()}");
-var movimentiFrame = new FrameView(new Rect(44, 0, 64, 20), "Movimenti");
-var operazioniLabel = new Label(44, 20, "        [A] Aggiungi    [E] Elimina    [RETURN] Modifica        ");
-operazioniLabel.ColorScheme = Colors.Error;
+var movimentiFrm = new FrameView(new Rect(44, 0, 64, 20), "Movimenti");
+var operazioniLbl = new Label(44, 20, "        [A] Aggiungi    [E] Elimina    [RETURN] Modifica        ");
+operazioniLbl.ColorScheme = Colors.Error;
 // Add some controls, 
 win.Add(
 // The ones laid out like an australopithecus, with Absolute positions:
-    riassuntoFrame,
-    movimentiFrame,
-    operazioniLabel
+    rissuntoFrm,
+    movimentiFrm,
+    operazioniLbl
     );
 
 Application.Run();
